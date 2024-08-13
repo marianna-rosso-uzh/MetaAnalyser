@@ -40,11 +40,45 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
   font-family: Arial, sans-serif !important;
   font-size: 12px; 
 } 
+input[type=number] {
+              -moz-appearance:textfield;
+        }
+        input[type=number]::{
+              -moz-appearance:textfield;
+        }
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+              -webkit-appearance: none;
+              margin: 0;
+        }
     "))
                 
                 ),
-                titlePanel("Meta-analysis simulator"),
+                titlePanel("META-ANALYSER"),
                 tabsetPanel(
+                  tabPanel(
+                    "Welcome",fluid=T,
+                    column(3,br(),br(),
+                           style = "background-color:#ffffff;text-align:center;",
+                           tags$img(src = "CLEVER_MS_logo.png", width = "100%", height = "auto")
+                    ),
+                    column(8,br(), h2(strong("Welcome!")),
+                           p("The", strong("CLEVER-MS"), "(",strong("Cl"),"inical Trials ",strong("E"),"xtraction and ",strong("V"),"alidation tool 
+                      for ",strong("E"),"xploration and ",strong("R"),"esearch in ",strong("M"),"ultiple ",strong("S"),"clerosis) 
+                        platform is a living and comprehensive data warehouse on multiple sclerosis drug trials. Respective clinical trial 
+                        registries are automatically scraped collecting the most recent relevant evidence. Our goal is to disentangle factors
+                        which govern successful translation and application of drugs for persons with multiple sclerosis."),
+                           br(),
+                           p(strong("CLEVER-MS")," stems from a multidisciplinary effort between the ",a("Center for Reproducible Science",
+                                                                                                         href = "https://www.crs.uzh.ch/en.html", target="_blank"),
+                             "at the Unviersity of Zürich,
+                        and the" ,a("CAMARADES consortium",
+                                    href = "https://www.ed.ac.uk/clinical-brain-sciences/research/camarades", target="_blank"), 
+                             "at the University of Edinburgh in the UK."),
+                           br(),
+                           p("For questions, please contact: benjaminvictor.ineichen@uzh.ch"))
+                    
+                  ),
                   tabPanel("Effect Size",
                            fluidRow(
                              column(2, box(title = "Study", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 165px; background-color: #f9e7dc;",
@@ -99,14 +133,15 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
                                     div(class = "spacer"),
                                     fluidRow(box(status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",
                                                  htmlOutput("data_table"),
-                                                 actionButton("update_sd", "Update",style = "background-color: #ec8c43; color: white; border: none;"),
-                                                 downloadButton("download_table", "Download CSV") 
+                                                 actionButton("update_sd", "Update",style = "background-color: #ec8c43; color: white; border: none; padding: 10px"),
+                                                 downloadButton("download_table", "Download CSV",style = "background-color: #48423e; color: white; border: none; padding: 10px;"),
+                                                 downloadButton("download_plot", "Download Plot",style = "background-color: #48423e; color: white; border: none; padding: 10px;")
                                     ))),
                              column(5, box(title = "Forest Plot", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 350px;",
+                                           
                                            plotOutput("forest_plot")))
                            )
-                  ),
-                  tabPanel("Demo"))
+                  ))
 )
 
 server <- function(input, output, session) {
@@ -271,6 +306,26 @@ server <- function(input, output, session) {
       plot.new()  
     }
   })
+  
+  
+  output$download_plot <- downloadHandler(
+    filename = function() {
+      paste("forest_plot", Sys.Date(), ".png", sep = "")
+    },
+    content = function(file) {
+      # Save the plot as a PNG file
+      png(file, width = 800, height = 600) # Adjust width and height as needed
+      forest(res, header = "Author(s), Year", xlab = "Correlation coefficient")
+      text(-16, -1, pos = 4, cex = 0.75, bquote(paste(
+        "RE Model (Q = ", .(round(res$QE, digits = 2)),
+        ", df = ", .(res$k - res$p), ", ",
+        .(round(res$QEp, digits = 3)), "; ",
+        I^2, " = ", .(round(res$I2, digits = 1)), "%)")))
+      dev.off()
+    }
+  )
+  
+  
 }
 
 shinyApp(ui = ui, server = server)
