@@ -54,7 +54,8 @@ input[type=number] {
     "))
                 
                 ),
-                titlePanel("META-ANALYSER"),
+                titlePanel("MetaAnalyze",windowTitle = "MetaAnalyze"),
+                p("The teaching tool to easily perform a meta-analysis"),
                 tabsetPanel(
                   tabPanel(
                     "Welcome",fluid=T,
@@ -62,23 +63,22 @@ input[type=number] {
                            style = "background-color:#ffffff;text-align:center;",
                            tags$img(src = "CLEVER_MS_logo.png", width = "100%", height = "auto")
                     ),
-                    column(8,br(), h2(strong("Welcome!")),
-                           p("The", strong("CLEVER-MS"), "(",strong("Cl"),"inical Trials ",strong("E"),"xtraction and ",strong("V"),"alidation tool 
-                      for ",strong("E"),"xploration and ",strong("R"),"esearch in ",strong("M"),"ultiple ",strong("S"),"clerosis) 
-                        platform is a living and comprehensive data warehouse on multiple sclerosis drug trials. Respective clinical trial 
-                        registries are automatically scraped collecting the most recent relevant evidence. Our goal is to disentangle factors
-                        which govern successful translation and application of drugs for persons with multiple sclerosis."),
-                           br(),
-                           p(strong("CLEVER-MS")," stems from a multidisciplinary effort between the ",a("Center for Reproducible Science",
-                                                                                                         href = "https://www.crs.uzh.ch/en.html", target="_blank"),
-                             "at the Unviersity of Zürich,
-                        and the" ,a("CAMARADES consortium",
-                                    href = "https://www.ed.ac.uk/clinical-brain-sciences/research/camarades", target="_blank"), 
-                             "at the University of Edinburgh in the UK."),
-                           br(),
-                           p("For questions, please contact: benjaminvictor.ineichen@uzh.ch"))
-                    
-                  ),
+                    column(8,br(), h3(strong("Welcome to MetaAnalyze!")),
+                           p("Welcome to MetaAnalyze, a didactive tool designed to simplify the process of conducting meta-analyses and visualizing results through forest plots. 
+                             Whether you're new to meta-analysis or just looking for a straightforward way to analyze your data, this app has you covered!"),
+                    p(strong("What Can You Do Here?")),
+                    HTML("<ul>
+             <li><strong>Enter Your Data:</strong> Easily input your study results directly into the app.</li>
+             <li><strong>Perform Meta-Analysis:</strong> Automatically calculate summary statistics and conduct a meta-analysis with minimal effort.</li>
+             <li><strong>Generate Forest Plots:</strong> Visualize your results through clear and informative forest plots.</li>
+           </ul>"),
+                    p("Our goal is to provide a user-friendly experience that enables you to focus on your research without needing to install additional software or write any code."),
+                    p(strong("Acknowledgments")),
+                    p("This tool was conceptualized and created by the",a("STRIDE-Lab",href="https://stride-lab.pages.uzh.ch/website/"),", and designed by",a("Marianna Rosso",href="https://stride-lab.pages.uzh.ch/website/people/rosso-marianna/"), 
+                    ". We appreciate your use of MetaAnalyze and hope it enhances your research process.
+
+Feel free to explore and get started with your meta-analysis!")
+                    )),
                   tabPanel("Effect Size",
                            fluidRow(
                              column(2, box(title = "Study", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 180px; background-color: #f9e7dc;",
