@@ -99,7 +99,8 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
                                     div(class = "spacer"),
                                     fluidRow(box(status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",
                                                  htmlOutput("data_table"),
-                                                 actionButton("update_sd", "Update",style = "background-color: #ec8c43; color: white; border: none;")
+                                                 actionButton("update_sd", "Update",style = "background-color: #ec8c43; color: white; border: none;"),
+                                                 downloadButton("download_table", "Download CSV") 
                                     ))),
                              column(5, box(title = "Forest Plot", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 350px;",
                                            plotOutput("forest_plot")))
@@ -226,9 +227,20 @@ server <- function(input, output, session) {
       row_spec(seq(1,nrow(df_t),2), background="#f8eee9") %>%
         kable_styling("striped", full_width = TRUE) %>%
         add_header_above(c(" ", "Control" = 4, "Treatment" = 4, " ", " ","")) %>% 
-        column_spec(column = 12, width = "0.5in")
+        column_spec(column = 12, width = "0.5in")%>%
+        scroll_box(height = "250px")
     )
   })
+  
+  
+  output$download_table <- downloadHandler(
+    filename = function() {
+      paste("my_table", Sys.Date(), ".csv", sep = "")
+    },
+    content = function(file) {
+      write.csv(data(), file, row.names = FALSE)
+    }
+  )
   
   # Observe delete button clicks
   observeEvent(input$deletePressed, {
