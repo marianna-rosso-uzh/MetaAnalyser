@@ -81,7 +81,7 @@ input[type=number] {
                   ),
                   tabPanel("Effect Size",
                            fluidRow(
-                             column(2, box(title = "Study", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 165px; background-color: #f9e7dc;",
+                             column(2, box(title = "Study", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 180px; background-color: #f9e7dc;",
                                            textInput("study_id", "Paper ID",value=
                                                        paste0(
                                                        sample(randomNames(1,which.names="last",ethnicity=c("African American", "Hispanic", "White")),1),
@@ -89,7 +89,7 @@ input[type=number] {
                                            tags$p(HTML("Unique ID for the study paper, this will be displayed in the forest plot"), 
                                                   style = "font-size: 10px; font-family: Arial, sans-serif;")
                              )),
-                             column(5, box(title = "Control Group", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 165px; background-color: #fad7c2;",
+                             column(5, box(title = "Control Group", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 180px; background-color: #fad7c2;",
                                            fluidRow(
                                              column(3, numericInput("mean_c", HTML("x̄"), value =  round(rnorm(1,50,15),1)),
                                                     tags$p(HTML("Unit-less mean value for the control group"), 
@@ -108,7 +108,7 @@ input[type=number] {
                                                     style = "font-size: 10px; font-family: Arial, sans-serif;"))
                                            )
                              )),
-                             column(5, box(title = "Treatment Group", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 165px; background-color: #fac8a8;",
+                             column(5, box(title = "Treatment Group", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 180px; background-color: #fac8a8;",
                                            fluidRow(
                                              column(3, numericInput("mean_t", HTML("x̄"), value =  round(rnorm(1,100,15),1)),
                                              tags$p(HTML("Unit-less mean value for the treatment group"), 
