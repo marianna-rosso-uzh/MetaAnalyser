@@ -81,8 +81,8 @@ input[type=number] {
                   ),
                   column(
                     width = 4,
-                    a(href = "https://stride-lab.pages.uzh.ch/website/", target = "_blank",img(src = "stride_logo.png", height = "60px", width = "210px")),
-                    a(href = "https://www.uzh.ch/cmsssl/en.html/", target = "_blank",img(src = "uzh_logo.png", height = "98px", width = "200px"))# https://www.uzh.ch/cmsssl/en.html
+                    a(href = "https://stride-lab.pages.uzh.ch/website/", target = "_blank",img(src = "stride_logo.png", height = "50px", width = "200px")),
+                    a(href = "https://www.uzh.ch/cmsssl/en.html/", target = "_blank",img(src = "uzh_logo.png", height = "88px", width = "190px"))# https://www.uzh.ch/cmsssl/en.html
                   )),
                   
                 
@@ -183,7 +183,10 @@ Feel free to explore and get started with your meta-analysis!"))
                     column(5,br(),
                            htmlOutput("metaanalysis_summary"))
                     
-                  ))
+                  ),
+                  tabPanel("Sources",
+                           htmlOutput("text_and_code")
+                           ))
 )
 
 server <- function(input, output, session) {
@@ -432,12 +435,37 @@ server <- function(input, output, session) {
     }
     
     metafor_summary_fun(res_meta)
-    
-    
   })
   
- 
-  
+  output$text_and_code <- renderUI({
+    HTML(paste0("</br>",
+                "<p>This app was generated entirely using R. The code used to generate this app is published ",
+                "<a href='https://github.com/marianna-rosso-uzh/MetaAnalyser' target='_blank'>here</a>.",
+                "</p>",
+      "<p>The meta-analytic model calculates <i>hedges' g</i> as estimate of effect size through the use of the ",
+      "<a href='https://www.metafor-project.org/doku.php/metafor' target='_blank'>metafor package</a>.",
+      "</p>",
+      "<p>Briefly, a dataframe is generated using the values of mean, samplze size, and standard deviation,
+      for both the treatment and control group. Next, the effect size and variance are calculated as such:</p>",
+      "<pre><code>", "metafor::escalc(
+      measure = SMD, 
+      m1i = MeanTreatment, 
+      sd1i = SDTreatment, 
+      n1i = SampleSizeTreatment, 
+      m2i = MeanControl, 
+      sd2i = SDControl, 
+      n2i = SampleSizeControl,
+      slab = StudyID,
+      data = data
+    )", "</code></pre>",
+      "<p>The meta-analysis is then performed:</p>",
+      "<pre><code>", "res_meta <- rma(yi, vi, data = data)", "</code></pre>",
+      "<p>Where <italic>yi</italic> and <italic>vi</italic> are calculated with the metafor::escalc function.</p>",
+      "<p>Finally, a forest plot is generated:</p>",
+      "<pre><code>", "forest(res)", "</code></pre>"
+    ))
+  })
+
 }
 
 shinyApp(ui = ui, server = server)

@@ -1,0 +1,12 @@
+name: MetaAnalysisDemo
+title: MetaAnalysisDemo
+username: ineichengroup
+account: ineichengroup
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 12463493
+bundleId: 8990404
+url: https://ineichengroup.shinyapps.io/MetaAnalysisDemo/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
