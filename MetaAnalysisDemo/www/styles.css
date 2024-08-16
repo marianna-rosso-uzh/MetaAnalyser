@@ -1,0 +1,9 @@
+@font-face {  
+  src: url(www/TheSansCd-5_Plain_TRIAL.otf);
+  font-family: "TheSans";
+}
+
+.p_Style {
+	font-family: 'TheSans';
+	color: red;
+}

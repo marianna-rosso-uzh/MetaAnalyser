@@ -7,9 +7,12 @@ library(DT)
 library(knitr)
 library(kableExtra)
 library(randomNames)
+library(rmarkdown)
+library(showtext)
+
 
 ui <- fluidPage(theme = shinytheme("sandstone"),
-                tags$head(
+                tags$head(includeCSS("www/styles.css"),
                   tags$link(rel = "stylesheet", href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"),
                   tags$style(HTML("
       .custom-box {
@@ -22,6 +25,7 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
       .spacer {
         margin-bottom: 20px;
       }
+      a {color: #00ba6f}
   .delete-btn {
   background-color: transparent;
   border: none;
@@ -40,6 +44,20 @@ ui <- fluidPage(theme = shinytheme("sandstone"),
   font-family: Arial, sans-serif !important;
   font-size: 12px; 
 } 
+    #tab2_content {
+      background-image: url('g6890-3.svg');
+      background-position: bottom center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed;
+      height: 100vh;  
+      padding: 20px;
+    }
+    .plot-border {
+      border: 2px solid #7998a3; 
+      padding: 10px; 
+      margin-bottom: 20px; 
+    }
 input[type=number] {
               -moz-appearance:textfield;
         }
@@ -54,34 +72,49 @@ input[type=number] {
     "))
                 
                 ),
-                titlePanel("MetaAnalyze",windowTitle = "MetaAnalyze"),
-                p("The teaching tool to easily perform a meta-analysis"),
+                
+                fluidRow(
+                  column(
+                    width = 8,
+                    h2("MetaAnalyze"),
+                    p("The teaching tool to easily perform a meta-analysis"),
+                  ),
+                  column(
+                    width = 4,
+                    a(href = "https://stride-lab.pages.uzh.ch/website/", target = "_blank",img(src = "stride_logo.png", height = "60px", width = "210px")),
+                    a(href = "https://www.uzh.ch/cmsssl/en.html/", target = "_blank",img(src = "uzh_logo.png", height = "98px", width = "200px"))# https://www.uzh.ch/cmsssl/en.html
+                  )),
+                  
+                
                 tabsetPanel(
                   tabPanel(
-                    "Welcome",fluid=T,
-                    column(3,br(),br(),
-                           style = "background-color:#ffffff;text-align:center;",
-                           tags$img(src = "CLEVER_MS_logo.png", width = "100%", height = "auto")
+                    "Welcome",
+                    div(id = "tab2_content",
+                    fluidRow(
+                      column(1
                     ),
-                    column(8,br(), h3(strong("Welcome to MetaAnalyze!")),
+                    column(9,br(), h3(strong("Welcome to MetaAnalyze!")),
                            p("Welcome to MetaAnalyze, a didactive tool designed to simplify the process of conducting meta-analyses and visualizing results through forest plots. 
                              Whether you're new to meta-analysis or just looking for a straightforward way to analyze your data, this app has you covered!"),
-                    p(strong("What Can You Do Here?")),
-                    HTML("<ul>
+                           p(strong("What Can You Do Here?")),
+                           HTML("<ul>
              <li><strong>Enter Your Data:</strong> Easily input your study results directly into the app.</li>
              <li><strong>Perform Meta-Analysis:</strong> Automatically calculate summary statistics and conduct a meta-analysis with minimal effort.</li>
              <li><strong>Generate Forest Plots:</strong> Visualize your results through clear and informative forest plots.</li>
            </ul>"),
-                    p("Our goal is to provide a user-friendly experience that enables you to focus on your research without needing to install additional software or write any code."),
-                    p(strong("Acknowledgments")),
-                    p("This tool was conceptualized and created by the",a("STRIDE-Lab",href="https://stride-lab.pages.uzh.ch/website/"),", and designed by",a("Marianna Rosso",href="https://stride-lab.pages.uzh.ch/website/people/rosso-marianna/"), 
-                    ". We appreciate your use of MetaAnalyze and hope it enhances your research process.
+                           p("Our goal is to provide a user-friendly experience that enables you to focus on learning the basic concepts of a meta-analysis without needing to install additional software or write any code."),
+                           p(strong("Acknowledgments")),
+                           p("This tool was conceptualized and created by the",a("STRIDE-Lab",href="https://stride-lab.pages.uzh.ch/website/"),
+                             " and designed by",a("Marianna Rosso.",href="https://stride-lab.pages.uzh.ch/website/people/rosso-marianna/"), 
+                             br(), "We appreciate your use of MetaAnalyze and hope it enhances your learning process.
 
-Feel free to explore and get started with your meta-analysis!")
-                    )),
+Feel free to explore and get started with your meta-analysis!"))
+                    ))
+                  ),
+                  
                   tabPanel("Effect Size",
                            fluidRow(
-                             column(2, box(title = "Study", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 180px; background-color: #f9e7dc;",
+                             column(2, box(title = "Study", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 180px; background-color: #dde4e7;",
                                            textInput("study_id", "Paper ID",value=
                                                        paste0(
                                                        sample(randomNames(1,which.names="last",ethnicity=c("African American", "Hispanic", "White")),1),
@@ -89,7 +122,7 @@ Feel free to explore and get started with your meta-analysis!")
                                            tags$p(HTML("Unique ID for the study paper, this will be displayed in the forest plot"), 
                                                   style = "font-size: 10px; font-family: Arial, sans-serif;")
                              )),
-                             column(5, box(title = "Control Group", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 180px; background-color: #fad7c2;",
+                             column(5, box(title = "Control Group", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 180px; background-color: #bbcad0;",
                                            fluidRow(
                                              column(3, numericInput("mean_c", HTML("x̄"), value =  round(rnorm(1,50,15),1)),
                                                     tags$p(HTML("Unit-less mean value for the control group"), 
@@ -108,7 +141,7 @@ Feel free to explore and get started with your meta-analysis!")
                                                     style = "font-size: 10px; font-family: Arial, sans-serif;"))
                                            )
                              )),
-                             column(5, box(title = "Treatment Group", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 180px; background-color: #fac8a8;",
+                             column(5, box(title = "Treatment Group", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 180px; background-color: #99b0b9;",
                                            fluidRow(
                                              column(3, numericInput("mean_t", HTML("x̄"), value =  round(rnorm(1,100,15),1)),
                                              tags$p(HTML("Unit-less mean value for the treatment group"), 
@@ -129,18 +162,27 @@ Feel free to explore and get started with your meta-analysis!")
                            fluidRow(
                              column(7,
                                     div(class = "spacer"),
-                                    fluidRow(column(7, actionButton("add_row", "Add Row",style = "background-color: #f5aa76; color: white; border: none;"), offset = 9.5)),
+                                    fluidRow(column(7, actionButton("add_row", "Add Row",style = "background-color: #7998a3; color: white; border: none;"), offset = 9.5)),
                                     div(class = "spacer"),
                                     fluidRow(box(status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",
                                                  htmlOutput("data_table"),
-                                                 actionButton("update_sd", "Update",style = "background-color: #ec8c43; color: white; border: none; padding: 10px"),
+                                                 actionButton("update_sd", "Update",style = "background-color: #587f8d; color: white; border: none; padding: 10px"),
                                                  downloadButton("download_table", "Download CSV",style = "background-color: #48423e; color: white; border: none; padding: 10px;"),
                                                  downloadButton("download_plot", "Download Plot",style = "background-color: #48423e; color: white; border: none; padding: 10px;")
                                     ))),
                              column(5, box(title = "Forest Plot", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 350px;",
                                            
-                                           plotOutput("forest_plot")))
+                                           plotOutput("forest_plot", height = "300px")))
                            )
+                  ),
+                  tabPanel(
+                    "Summary",
+                    column(1),
+                    column(5,br(),div(class = "plot-border", plotOutput("forest_plot2"))),
+                    column(1),
+                    column(5,br(),
+                           htmlOutput("metaanalysis_summary"))
+                    
                   ))
 )
 
@@ -259,7 +301,7 @@ server <- function(input, output, session) {
         kbl(escape = FALSE, col.names = c("Study ID", "x̄", "n", "SEM", "SD",
                                           "x̄", "n", "SEM", "SD", "ES", "Var", ""),
             table.attr = 'class="kable-table"') %>% 
-      row_spec(seq(1,nrow(df_t),2), background="#f8eee9") %>%
+      row_spec(seq(1,nrow(df_t),2), background="#ebf0f1") %>%
         kable_styling("striped", full_width = TRUE) %>%
         add_header_above(c(" ", "Control" = 4, "Treatment" = 4, " ", " ","")) %>% 
         column_spec(column = 12, width = "0.5in")%>%
@@ -287,7 +329,6 @@ server <- function(input, output, session) {
     }
   })
   
-  # Generate the forest plot
   output$forest_plot <- renderPlot({
     req(nrow(data()) > 0)  # Ensure there is data to plot
     
@@ -308,23 +349,94 @@ server <- function(input, output, session) {
   })
   
   
-  output$download_plot <- downloadHandler(
-    filename = function() {
-      paste("forest_plot", Sys.Date(), ".png", sep = "")
-    },
-    content = function(file) {
-      # Save the plot as a PNG file
-      png(file, width = 800, height = 600) # Adjust width and height as needed
-      forest(res, header = "Author(s), Year", xlab = "Correlation coefficient")
-      text(-16, -1, pos = 4, cex = 0.75, bquote(paste(
-        "RE Model (Q = ", .(round(res$QE, digits = 2)),
+  output$forest_plot2 <- renderPlot({
+    req(nrow(data()) > 0)  # Ensure there is data to plot
+    
+    df <- data()
+    
+    # Perform a check for sufficient data for the rma function to avoid errors
+    if (nrow(df) > 0 && sum(!is.na(df$yi)) > 0) {
+      res <- rma(yi, vi, data = df)
+      forest(res,header = "Author(s), Year", xlab="Correlation coefficient")
+      text(-16, -1, pos=4, cex=0.75, bquote(paste(
+        "RE Model (Q = ", .(round(res$QE, digits=2)),
         ", df = ", .(res$k - res$p), ", ",
-        .(round(res$QEp, digits = 3)), "; ",
-        I^2, " = ", .(round(res$I2, digits = 1)), "%)")))
-      dev.off()
+        .(round(res$QEp, digits=3)), "; ",
+        I^2, " = ", .(round(res$I2, digits=1)), "%)")))
+    } else {
+      plot.new()  
     }
-  )
+  })
   
+  
+  output$metaanalysis_summary <- renderUI({
+    
+    df <- data()
+    res_meta <- rma(yi, vi, data = df)
+    
+    metafor_summary_fun<-function(res){
+    
+    logLik <- res$fit.stats$REML[1]
+    deviance <- res$fit.stats$REML[2]
+    aic <- res$fit.stats$REML[3]
+    bic <- res$fit.stats$REML[4]
+    aicc <- res$fit.stats$REML[5]
+    tau2 <- res$tau2
+    tau <- sqrt(tau2)
+    i2 <- res$I2
+    h2 <- 1 / (1 - res$I2 / 100)
+    qtest <- res$QE
+    qdf <- res$k - 1
+    q_pval <- res$QEp
+    if(q_pval<.0001){
+      q_pval<-"<.0001"
+    } else {q_pval<-round(q_pval,4)}
+    coef <- res$b
+    se <- res$se
+    zval <- coef / se
+    pval <- 2 * pnorm(-abs(zval))
+    if(pval<.0001){
+      pval<-"<.0001"
+    } else {pval<-round(pval,4)}
+    ci.ub <- res$ci.ub
+    ci.lb <- res$ci.lb
+    
+    HTML(
+      
+      paste(
+        "Random-Effects Model (k =", res$k, "; tau^2 estimator: REML)","<br/>","<br/>",
+       strong( "Model Fit Statistics:"),"<br/>","<br/>",
+        
+        "logLik:",round(logLik,4),"<br/>",
+            "Deviance:",round(deviance,4),"<br/>",
+            "AIC:",round(aic,4),"<br/>",
+           "BIC:",round(bic,4),"<br/>",
+           "AICC:",round(aicc,4),"<br/>","<br/>",
+       "tau^2 (estimated amount of total heterogeneity):",round(tau2,4),"(SE =",round(res$se.tau,4),")","<br/>",
+       "tau (square root of estimated tau^2 value):",round(tau,4),"<br/>",
+       "I^2 (total heterogeneity / total variability):",round(i2,4),"<br/>",
+       "H^2 (total variability / sampling variability):",round(h2,4),"<br/>","<br/>",
+       
+       strong("Test for Heterogeneity:"),"<br/>","<br/>",
+       "Q (df =", qdf,") =",round(qtest,4),"<br/>","p-val =", q_pval,"<br/>","<br/>",
+       strong("Model Results:"),"<br/>","<br/>",
+
+
+   "estimate: ",round(coef,4),"<br/>",
+    "se: ",round(se,4),"<br/>",
+    "zval: ",round(zval,4),"<br/>",
+    "pval: ",pval,"<br/>",
+   "ci.lb: ",round(ci.lb,4),"<br/>",
+    "ci.ub: ",round(ci.ub,4)
+      ))
+    }
+    
+    metafor_summary_fun(res_meta)
+    
+    
+  })
+  
+ 
   
 }
 

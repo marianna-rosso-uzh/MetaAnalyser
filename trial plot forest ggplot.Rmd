@@ -6,6 +6,11 @@ date: "2024-07-30"
 
 ```{r }
 library(tidyverse)
+library(metafor)
+
+library(sjPlot)
+library(sjmisc)
+library(sjlabelled)
 ```
 
 
@@ -40,23 +45,64 @@ data.frame(summary(escalc_results))
 res<-rma(yi, vi, data = escalc_results)
 
 summary(res)
-data.frame(res$)
+
+print(summary(res))
 
 
-data.frame(summary(escalc_results)) %>% 
-  merge(.,data.frame(weights(res)) %>% rownames_to_column(var = "StudyID"),by="StudyID")
-  mutate(total_n=SampleSizeTreatment+SampleSizeControl) %>% 
-  ggplot(aes(x=yi,y=StudyID))+
-  geom_vline(xintercept=0)+
-  geom_point(aes(size=total_n))+
-  geom_linerange(aes(xmin=ci.lb,xmax=ci.ub))+
-  geom_text(aes(label=paste0(round(yi,2)," [",round(ci.lb,2)," - ",round(ci.ub,2),"]"),x=max(ci.ub)+1),hjust=0)+
-  theme_minimal()+
-  theme(
-    legend.position = "none"
-  )
+res$fit.stats
+```
+```{r}
 
-data.frame(weights(res)) %>% rownames_to_column(var = "StudyID")
+  logLik <- res$fit.stats$REML[1]
+  deviance <- res$fit.stats$REML[2]
+  aic <- res$fit.stats$REML[3]
+  bic <- res$fit.stats$REML[4]
+  aicc <- res$fit.stats$REML[5]
+  tau2 <- res$tau2
+  tau <- sqrt(tau2)
+  i2 <- res$I2
+  h2 <- 1 / (1 - res$I2 / 100)
+  qtest <- res$QE
+  qdf <- res$k - 1
+  q_pval <- res$QEp
+  coef <- res$b
+  se <- res$se
+  zval <- coef / se
+  pval <- 2 * pnorm(-abs(zval))
+  if(pval<.0001){
+    pval<-"<.0001"
+    } else {pval<-round(pval,4)}
+  ci.ub <- res$ci.ub
+  ci.lb <- res$ci.lb
+  
+  # Format output
+  cat("Random-Effects Model (k =", res$k, "; tau^2 estimator: REML)\n\n")
+  
+  cat("Model Fit Statistics:\n\n")
+cat(paste0("logLik: ",round(logLik,4),"\n"))
+cat(paste0("Deviance: ",round(deviance,4),"\n"))
+cat(paste0("AIC: ",round(aic,4),"\n"))
+cat(paste0("BIC: ",round(bic,4),"\n"))
+cat(paste0("AICC: ",round(aicc,4),"\n\n"))
+
+  
+  cat(sprintf("tau^2 (estimated amount of total heterogeneity): %6.4f (SE = %6.4f)\n", tau2, res$se.tau))
+  cat(sprintf("tau (square root of estimated tau^2 value):      %6.4f\n", tau))
+  cat(sprintf("I^2 (total heterogeneity / total variability):   %5.2f%%\n", i2))
+  cat(sprintf("H^2 (total variability / sampling variability):  %5.2f\n\n", h2))
+  
+  cat("Test for Heterogeneity:\n\n")
+  cat(sprintf("Q(df = %d) = %6.4f, p-val = %6.4f\n\n", qdf, qtest, q_pval))
+  
+  cat("Model Results:\n\n")
+  
+cat(paste0("estimate: ",round(coef,4),"\n"))
+cat(paste0("se: ",round(se,4),"\n"))
+cat(paste0("zval: ",round(zval,4),"\n"))
+cat(paste0("pval: ",pval,"\n"))
+cat(paste0("ci.lb: ",round(ci.lb,4),"\n"))
+cat(paste0("ci.ub: ",round(ci.ub,4),"\n\n"))
+
 ```
 
 
@@ -162,7 +208,7 @@ weights <- weights(res)
 par(mar=c(2.7,3.2,2.3,1.3), mgp=c(3,0,0), tcl=0.15)
  
 ### forest plot with extra annotations
-sav <- forest(dat$yi, dat$vi, xlim=c(-3.4,2.1), ylim=c(-0.5,k+3), alim=c(-1,1), cex=0.88,
+forest(dat$yi, dat$vi, xlim=c(-3.4,2.1), ylim=c(-0.5,k+3), alim=c(-1,1), cex=0.88,
               pch=18, psize=psize, efac=0, refline=NA, lty=c(1,0), xlab="",
               ilab=cbind(paste(dat$ai, "/", dat$n1i), paste(dat$ci, "/", dat$n2i),weights),
               ilab.xpos=c(-1.9,-1.3,1.2), annosym=c(" (", " to ", ")"),
