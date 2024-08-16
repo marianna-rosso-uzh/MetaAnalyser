@@ -115,58 +115,56 @@ Feel free to explore and get started with your meta-analysis!"))
                   tabPanel("Effect Size",
                            fluidRow(
                              column(2, box(title = "Study", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 180px; background-color: #dde4e7;",
-                                           textInput("study_id", "Paper ID",value=
-                                                       paste0(
-                                                       sample(randomNames(1,which.names="last",ethnicity=c("African American", "Hispanic", "White")),1),
-                                                       sample(1980:2024, 1))),
+                                           textInput("study_id", "Paper ID"),
                                            tags$p(HTML("Unique ID for the study paper, this will be displayed in the forest plot"), 
                                                   style = "font-size: 10px; font-family: Arial, sans-serif;")
                              )),
                              column(5, box(title = "Control Group", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 180px; background-color: #bbcad0;",
                                            fluidRow(
-                                             column(3, numericInput("mean_c", HTML("x̄"), value =  round(rnorm(1,50,15),1)),
+                                             column(3, numericInput("mean_c", HTML("x̄"), value = NULL),
                                                     tags$p(HTML("Unit-less mean value for the control group"), 
                                                            style = "font-size: 10px; font-family: Arial, sans-serif;")
-                                                    ),
-                                             column(3, numericInput("n_c", "n",value= sample(5:25, 1)),
-                                             tags$p(HTML("Sample size for the control group"), 
-                                                    style = "font-size: 10px; font-family: Arial, sans-serif;")
-                                                    ),
-                                             column(3, numericInput("sem_c", "SEM", value =  round(rnorm(1,5,2),1)),
-                                             tags$p(HTML("Standard error of the mean (if available) for the control group"), 
-                                                    style = "font-size: 10px; font-family: Arial, sans-serif;")
-                                                    ),
-                                             column(3, numericInput("sd_c", "SD", value =  0),
-                                             tags$p(HTML("Standard deviation of the mean (if available) for the control group"), 
-                                                    style = "font-size: 10px; font-family: Arial, sans-serif;"))
+                                             ),
+                                             column(3, numericInput("n_c", "n", value = NULL),
+                                                    tags$p(HTML("Sample size for the control group"), 
+                                                           style = "font-size: 10px; font-family: Arial, sans-serif;")
+                                             ),
+                                             column(3, numericInput("sem_c", "SEM", value = NULL),
+                                                    tags$p(HTML("Standard error of the mean (if available) for the control group"), 
+                                                           style = "font-size: 10px; font-family: Arial, sans-serif;")
+                                             ),
+                                             column(3, numericInput("sd_c", "SD", value = NULL),
+                                                    tags$p(HTML("Standard deviation of the mean (if available) for the control group"), 
+                                                           style = "font-size: 10px; font-family: Arial, sans-serif;"))
                                            )
                              )),
                              column(5, box(title = "Treatment Group", status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",style = "height: 180px; background-color: #99b0b9;",
                                            fluidRow(
-                                             column(3, numericInput("mean_t", HTML("x̄"), value =  round(rnorm(1,100,15),1)),
-                                             tags$p(HTML("Unit-less mean value for the treatment group"), 
-                                                    style = "font-size: 10px; font-family: Arial, sans-serif;")),
-                                             column(3, numericInput("n_t", "n", value= sample(5:25, 1)),
-                                             tags$p(HTML("Sample size for the treatment group"), 
-                                                    style = "font-size: 10px; font-family: Arial, sans-serif;")
-                                                    ),
-                                             column(3, numericInput("sem_t", "SEM", value =  round(rnorm(1,9,2),1)),
-                                             tags$p(HTML("Standard error of the mean (if available) for the treatment group"), 
-                                                    style = "font-size: 10px; font-family: Arial, sans-serif;")),
-                                             column(3, numericInput("sd_t", "SD", value = 0),
-                                             tags$p(HTML("Standard deviation of the mean (if available) for the treatment group"), 
-                                                    style = "font-size: 10px; font-family: Arial, sans-serif;"))
+                                             column(3, numericInput("mean_t", HTML("x̄"), value = NULL),
+                                                    tags$p(HTML("Unit-less mean value for the treatment group"), 
+                                                           style = "font-size: 10px; font-family: Arial, sans-serif;")),
+                                             column(3, numericInput("n_t", "n", value = NULL),
+                                                    tags$p(HTML("Sample size for the treatment group"), 
+                                                           style = "font-size: 10px; font-family: Arial, sans-serif;")
+                                             ),
+                                             column(3, numericInput("sem_t", "SEM", value = NULL),
+                                                    tags$p(HTML("Standard error of the mean (if available) for the treatment group"), 
+                                                           style = "font-size: 10px; font-family: Arial, sans-serif;")),
+                                             column(3, numericInput("sd_t", "SD", value = NULL),
+                                                    tags$p(HTML("Standard deviation of the mean (if available) for the treatment group"), 
+                                                           style = "font-size: 10px; font-family: Arial, sans-serif;"))
                                            )
                              ))
                            ),
                            fluidRow(
                              column(7,
                                     div(class = "spacer"),
-                                    fluidRow(column(7, actionButton("add_row", "Add Row",style = "background-color: #7998a3; color: white; border: none;"), offset = 9.5)),
+                                    fluidRow(actionButton("add_custom", "Add Row",style = "background-color: #7998a3; color: white; border: none;"),
+                                             actionButton("generate_add", "Generate Random Values and Add",style = "background-color: #587f8d; color: white; border: none;")),
                                     div(class = "spacer"),
                                     fluidRow(box(status = "primary", solidHeader = TRUE, width = 12, class = "custom-box",
                                                  htmlOutput("data_table"),
-                                                 actionButton("update_sd", "Update",style = "background-color: #587f8d; color: white; border: none; padding: 10px"),
+                                                 actionButton("update_sd", "Update table and plot",style = "background-color: #587f8d; color: white; border: none; padding: 10px"),
                                                  downloadButton("download_table", "Download CSV",style = "background-color: #48423e; color: white; border: none; padding: 10px;"),
                                                  downloadButton("download_plot", "Download Plot",style = "background-color: #48423e; color: white; border: none; padding: 10px;")
                                     ))),
@@ -174,7 +172,8 @@ Feel free to explore and get started with your meta-analysis!"))
                                            
                                            plotOutput("forest_plot", height = "300px")))
                            )
-                  ),
+                  )
+                  ,
                   tabPanel(
                     "Summary",
                     column(1),
@@ -190,7 +189,6 @@ Feel free to explore and get started with your meta-analysis!"))
 )
 
 server <- function(input, output, session) {
-  # Initial empty data frame
   data <- reactiveVal(data.frame(
     StudyID = character(),
     MeanControl = numeric(),
@@ -207,8 +205,24 @@ server <- function(input, output, session) {
   ))
   
   # Observe add_row button click event
-  observeEvent(input$add_row, {
-    # Adding the current row data to the reactive data object
+  data <- reactiveVal(data.frame(
+    StudyID = character(),
+    MeanControl = numeric(),
+    SampleSizeControl = numeric(),
+    SEMControl = numeric(),
+    SDControl = numeric(),
+    MeanTreatment = numeric(),
+    SampleSizeTreatment = numeric(),
+    SEMTreatment = numeric(),
+    SDTreatment = numeric(),
+    yi = numeric(),  # Effect size
+    vi = numeric(),  # Variance of effect size
+    stringsAsFactors = FALSE
+  ))
+  
+  # Observe "Add Custom Values" button click event
+  observeEvent(input$add_custom, {
+    # Adding the current input values to the reactive data object
     new_row <- data.frame(
       StudyID = input$study_id,
       MeanControl = input$mean_c,
@@ -225,45 +239,87 @@ server <- function(input, output, session) {
     )
     data(rbind(data(), new_row))
     
-    # Generate new example data
+    # Optionally reset the input fields for the next input
+    updateNumericInput(session, "mean_c", value = NULL)
+    updateNumericInput(session, "n_c", value = NULL)
+    updateNumericInput(session, "sem_c", value = NULL)
+    updateNumericInput(session, "sd_c", value = NULL)
+    updateNumericInput(session, "mean_t", value = NULL)
+    updateNumericInput(session, "n_t", value = NULL)
+    updateNumericInput(session, "sem_t", value = NULL)
+    updateNumericInput(session, "sd_t", value = NULL)
+  })
+  
+  # Observe "Generate Random Values and Add" button click event
+  observeEvent(input$generate_add, {
+    # Generate random values
     new_examples <- list(
+      study_id = paste0(
+        sample(randomNames(1, which.names = "last", ethnicity = c("African American", "Hispanic", "White")), 1),
+        sample(1980:2024, 1)
+      ),
       mean_c = round(rnorm(1, 50, 15), 1),
       n_c = sample(5:25, 1),
       sem_c = round(rnorm(1, 5, 2), 1),
       sd_c = 0,
       mean_t = round(rnorm(1, 100, 15), 1),
       n_t = sample(5:25, 1),
-      sem_t = round(rnorm(1,8, 2), 1),
+      sem_t = round(rnorm(1, 8, 2), 1),
       sd_t = 0
     )
     
-    # Reset the input fields to new example data
-    updateNumericInput(session, "mean_c", value = new_examples$mean_c)
-    updateNumericInput(session, "n_c", value = new_examples$n_c)
-    updateNumericInput(session, "sem_c", value = new_examples$sem_c)
-    updateNumericInput(session, "sd_c", value = new_examples$sd_c)
-    updateNumericInput(session, "mean_t", value = new_examples$mean_t)
-    updateNumericInput(session, "n_t", value = new_examples$n_t)
-    updateNumericInput(session, "sem_t", value = new_examples$sem_t)
-    updateNumericInput(session, "sd_t", value = new_examples$sd_t)
+    # Add the generated values to the data
+    new_row <- data.frame(
+      StudyID = new_examples$study_id,
+      MeanControl = new_examples$mean_c,
+      SampleSizeControl = new_examples$n_c,
+      SEMControl = new_examples$sem_c,
+      SDControl = new_examples$sd_c,
+      MeanTreatment = new_examples$mean_t,
+      SampleSizeTreatment = new_examples$n_t,
+      SEMTreatment = new_examples$sem_t,
+      SDTreatment = new_examples$sd_t,
+      yi = NA,
+      vi = NA,
+      stringsAsFactors = FALSE
+    )
+    data(rbind(data(), new_row))
     
-    # Optionally, you can also reset the study ID input if needed
-    updateTextInput(session, "study_id",value=
-                      paste0(
-                        sample(randomNames(1,which.names="last",ethnicity=c("African American", "Hispanic", "White")),1),
-                        sample(1980:2024, 1)))
+    # Optionally reset the input fields for the next input
+    updateNumericInput(session, "mean_c", value = NULL)
+    updateNumericInput(session, "n_c", value = NULL)
+    updateNumericInput(session, "sem_c", value = NULL)
+    updateNumericInput(session, "sd_c", value = NULL)
+    updateNumericInput(session, "mean_t", value = NULL)
+    updateNumericInput(session, "n_t", value = NULL)
+    updateNumericInput(session, "sem_t", value = NULL)
+    updateNumericInput(session, "sd_t", value = NULL)
   })
   
   
   # Update SD and calculate effect size (yi) and variance (vi)
+  # Update SD and calculate effect size (yi) and variance (vi)
   observeEvent(input$update_sd, {
+    # Check if the data table is empty
+    if (nrow(data()) == 0) {
+      showModal(modalDialog(
+        title = "Error",
+        "There is no data to update. Please add some data first.",
+        easyClose = TRUE,
+        footer = NULL
+      ))
+      return()  # Exit the observeEvent to prevent further processing
+    }
+    
     updated_data <- data() %>%
       mutate(
-        SDControl = ifelse(SDControl == 0 & SEMControl > 0 & SampleSizeControl > 0,
+        # Calculate SD for Control Group if SD is 0 and SEM is provided
+        SDControl = ifelse((SDControl == 0 | is.na(SDControl)) & SEMControl > 0 & SampleSizeControl > 0,
                            round(SEMControl * sqrt(SampleSizeControl), 2), SDControl),
-        SDTreatment = ifelse(SDTreatment == 0 & SEMTreatment > 0 & SampleSizeTreatment > 0,
+        # Calculate SD for Treatment Group if SD is 0 and SEM is provided
+        SDTreatment = ifelse((SDTreatment == 0| is.na(SDTreatment)) & SEMTreatment > 0 & SampleSizeTreatment > 0,
                              round(SEMTreatment * sqrt(SampleSizeTreatment), 2), SDTreatment)
-      ) 
+      )
     
     # Calculate effect size (yi) and variance (vi) using escalc from metafor
     escalc_results <- escalc(
@@ -281,10 +337,12 @@ server <- function(input, output, session) {
     updated_data$yi <- round(escalc_results$yi, 2)
     updated_data$vi <- round(escalc_results$vi, 2)
     
-    data(updated_data)
+    data(updated_data)  # Update the reactive data with the new calculations
   })
   
-  # Render the data table
+  
+  
+ 
   output$data_table <- renderUI({
     df_t <- data()
     
@@ -299,15 +357,18 @@ server <- function(input, output, session) {
                                 onclick = sprintf('Shiny.onInputChange("%s", "%s")', "deletePressed", i)))
     })
     
+    # Adjust header row to match the number of columns, including the delete button
     HTML(
       df_t %>%
         kbl(escape = FALSE, col.names = c("Study ID", "x̄", "n", "SEM", "SD",
-                                          "x̄", "n", "SEM", "SD", "ES", "Var", ""),
+                                          "x̄", "n", "SEM", "SD", "ES", "Var", "Delete"),
             table.attr = 'class="kable-table"') %>% 
-      row_spec(seq(1,nrow(df_t),2), background="#ebf0f1") %>%
+        row_spec(seq(1,nrow(df_t),2), background="#ebf0f1") %>%
+        column_spec(2:5, background = "#c5d1d7") %>%  # Apply background color to the second column's title
+        column_spec(6:9, background = "#b2c3ca") %>%
         kable_styling("striped", full_width = TRUE) %>%
-        add_header_above(c(" ", "Control" = 4, "Treatment" = 4, " ", " ","")) %>% 
-        column_spec(column = 12, width = "0.5in")%>%
+        # add_header_above(c(" ", "Control" = 4, "Treatment" = 4, " ", " ","")) %>% 
+        column_spec(column = 12, width = "0.5in") %>%  # Adjust the column index if necessary
         scroll_box(height = "250px")
     )
   })
@@ -319,6 +380,30 @@ server <- function(input, output, session) {
     },
     content = function(file) {
       write.csv(data(), file, row.names = FALSE)
+    }
+  )
+  
+  output$download_plot <- downloadHandler(
+    filename = function() {
+      paste("forest_plot", Sys.Date(), ".png", sep = "")
+    },
+    content = function(file) {
+      # Use a temporary file path
+      temp_file <- tempfile(fileext = ".png")
+      
+      # Save the plot to the temporary file
+      png(temp_file, width = 800, height = 600) # Adjust width and height as needed
+      res <- rma(yi, vi, data = data()) # Ensure res is calculated here
+      forest(res, header = "Author(s), Year", xlab = "Correlation coefficient")
+      text(-16, -1, pos = 4, cex = 0.75, bquote(paste(
+        "RE Model (Q = ", .(round(res$QE, digits = 2)),
+        ", df = ", .(res$k - res$p), ", ",
+        .(round(res$QEp, digits = 3)), "; ",
+        I^2, " = ", .(round(res$I2, digits = 1)), "%)")))
+      dev.off()
+      
+      # Move the temporary file to the final location
+      file.rename(temp_file, file)
     }
   )
   
@@ -373,6 +458,11 @@ server <- function(input, output, session) {
   
   
   output$metaanalysis_summary <- renderUI({
+    
+    if (nrow(data()) == 0) {
+      return(HTML("<p>No data available. Please add some data and generate a forest plot to see the summary.</p>"))
+    }
+    
     
     df <- data()
     res_meta <- rma(yi, vi, data = df)
@@ -462,7 +552,7 @@ server <- function(input, output, session) {
       "<pre><code>", "res_meta <- rma(yi, vi, data = data)", "</code></pre>",
       "<p>Where <italic>yi</italic> and <italic>vi</italic> are calculated with the metafor::escalc function.</p>",
       "<p>Finally, a forest plot is generated:</p>",
-      "<pre><code>", "forest(res)", "</code></pre>"
+      "<pre><code>", "forest(res)", "</code></pre>","</br>","</br>"
     ))
   })
 
